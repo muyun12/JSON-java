@@ -1,0 +1,91 @@
+plugins {
+    id 'java'
+    id 'maven'
+    id 'jacoco'
+    id 'org.sonarqube' version '2.6.2'
+}
+
+repositories {
+    maven{ url "http://220.248.226.76:52001/nexus/content/groups/public/" }
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.1.0'
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
+}
+
+compileJava.options*.compilerArgs = [
+    "-Xlint:serial", "-Xlint:varargs", "-Xlint:cast", "-Xlint:classfile",
+    "-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
+    "-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static",
+    "-Xlint:try", "-Xlint:fallthrough", "-Xlint:rawtypes", "-Xlint:deprecation",
+    "-Xlint:unchecked", "-Xlint:-options", "-Werror"
+]
+
+compileTestJava.options*.compilerArgs = [
+    "-Xlint:serial", "-Xlint:-varargs", "-Xlint:cast", "-Xlint:classfile",
+    "-Xlint:dep-ann", "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally",
+    "-Xlint:overrides", "-Xlint:path", "-Xlint:processing", "-Xlint:static",
+    "-Xlint:try", "-Xlint:-fallthrough", "-Xlint:-rawtypes", "-Xlint:-deprecation",
+    "-Xlint:-unchecked", "-Xlint:-options"]
+
+compileJava {
+    sourceCompatibility = 1.6
+    targetCompatibility = 1.6
+    options.encoding = 'UTF-8'
+}
+
+compileTestJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    options.encoding = 'UTF-8'
+    options.compilerArgs += "-parameters"
+}
+
+group = 'org.json'
+version = '1.0.0'
+
+jacoco {
+    toolVersion = "0.7.9"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectVersion", project.version + "_" + new Date().format('yyyyMMddHHmmss')
+    }
+}
+
+task commonsJar(type:Jar){
+     from sourceSets.main.output
+     destinationDir file("$buildDir/libs")
+     includes ['org/json/**']
+     manifest {
+         attributes 'Package-Name': project.name, 'Built-By': project.group,'Built-Date': new Date().format('yyyy-MM-dd HH:mm:ss'),'Manifest-Version':project.version
+     }
+}
+
+task commonsSourceJar(type:Jar){
+     classifier "sources"
+     from sourceSets.main.allSource
+     destinationDir file("$buildDir/libs")
+     includes ['org/json/**']
+     manifest {
+         attributes 'Package-Name': project.name + '-sources', 'Built-By': project.group,'Built-Date': new Date().format('yyyy-MM-dd HH:mm:ss'),'Manifest-Version': project.version
+     }
+}
+
+artifacts{
+    archives commonsSourceJar
+}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://$buildDir/dist")
+            pom.version = "$project.version"
+            pom.artifactId = "$project.name"
+            pom.groupId = "$project.group"
+        }
+    }
+}
