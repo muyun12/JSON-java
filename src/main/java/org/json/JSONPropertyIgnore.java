@@ -31,13 +31,12 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+
+/**
+ * 
+ * 在getter方法上使用这个注解忽略Bean中标记的属性。不管这个注解在类层级关系的任何层级，被标注的方法都不会被序列化到JSONObject对象中。
+ */
 @Documented
 @Retention(RUNTIME)
-@Target({METHOD})
-/**
- * Use this annotation on a getter method to override the Bean name
- * parser for Bean -&gt; JSONObject mapping. If this annotation is
- * present at any level in the class hierarchy, then the method will
- * not be serialized from the bean into the JSONObject.
- */
+@Target({ METHOD })
 public @interface JSONPropertyIgnore { }

@@ -50,6 +50,10 @@ jacoco {
     toolVersion = "0.7.9"
 }
 
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
 task commonsJar(type:Jar){
      from sourceSets.main.output
      destinationDir file("$buildDir/libs")
