@@ -46,53 +46,43 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 /**
- * A JSONObject is an unordered collection of name/value pairs. Its external
- * form is a string wrapped in curly braces with colons between the names and
- * values, and commas between the values and names. The internal form is an
- * object having <code>get</code> and <code>opt</code> methods for accessing
- * the values by name, and <code>put</code> methods for adding or replacing
- * values by name. The values can be any of these types: <code>Boolean</code>,
- * <code>JSONArray</code>, <code>JSONObject</code>, <code>Number</code>,
- * <code>String</code>, or the <code>JSONObject.NULL</code> object. A
- * JSONObject constructor can be used to convert an external form JSON text
- * into an internal form whose values can be retrieved with the
- * <code>get</code> and <code>opt</code> methods, or to convert values into a
- * JSON text using the <code>put</code> and <code>toString</code> methods. A
- * <code>get</code> method returns a value if one can be found, and throws an
- * exception if one cannot be found. An <code>opt</code> method returns a
- * default value instead of throwing an exception, and so is useful for
- * obtaining optional values.
+ * JSONObject是键值对的无序集合。它的外部形式是一个用大括号括起来的字符串，名称和值之间有冒号，值和名称之间有逗号。 内部是一个具有
+ * <code>get</code> 和 <code>opt</code> 方法的对象，这些方法用来通过名称访问值，并且通过 <code>opt</code>
+ * 方法来根据名称添加或替换值。值可以是以下类型：
+ * <ul>
+ * <li><code>Boolean</code></li>
+ * <li><code>JSONArray</code></li>
+ * <li><code>JSONObject</code></li>
+ * <li><code>Number</code></li>
+ * <li><code>String</code></li>
+ * <li><code>JSONObject.NULL</code></li>
+ * </ul>
+ * JSONObject 的构造函数可以把 JSON 文本转换为一个内部对象，可以用 <code>get</code> 和 <code>opt</code>
+ * 方法检索值，或者使用 <code>put</code> 和 <code>toString</code> 方法把值转为JSON文本。
+ * <code>get</code> 方法返回检索的值，否则抛出异常。 <code>opt</code> 方法返回默认值，不抛出异常，所以对于可选值很有用。
+ * 
  * <p>
- * The generic <code>get()</code> and <code>opt()</code> methods return an
- * object, which you can cast or query for type. There are also typed
- * <code>get</code> and <code>opt</code> methods that do type checking and type
- * coercion for you. The opt methods differ from the get methods in that they
- * do not throw. Instead, they return a specified value, such as null.
+ * 一般 <code>get()</code> and <code>opt()</code> 方法返回一个对象，你可以进行类型强制转换或者查询类型。
+ * 还有类型化的 <code>get</code> 和 <code>opt</code> 方法，可以为你进行类型检查和类型强转。
+ * <code>opt</code> 方法不同于 <code>get</code> 方法的地方就是不抛出异常，而是返回一个指定的值，比如null。
+ * 
  * <p>
- * The <code>put</code> methods add or replace values in an object. For
- * example,
+ * <code>put</code> 方法向JSONObject中添加或替换值。比如：
  *
  * <pre>
- * myString = new JSONObject()
- *         .put(&quot;JSON&quot;, &quot;Hello, World!&quot;).toString();
+ * myString = new JSONObject().put("JSON", "Hello, World!").toString();
  * </pre>
  *
- * produces the string <code>{"JSON": "Hello, World"}</code>.
+ * 生成的JSON文本为： <code>{"JSON": "Hello, World"}</code> 。
+ * 
  * <p>
- * The texts produced by the <code>toString</code> methods strictly conform to
- * the JSON syntax rules. The constructors are more forgiving in the texts they
- * will accept:
+ * 通过 <code>toString</code> 方法生成的文本严格遵守JSON语法规范。 构造函数对于文本的要求要宽松一些，它们接受以下形式：
  * <ul>
- * <li>An extra <code>,</code>&nbsp;<small>(comma)</small> may appear just
- * before the closing brace.</li>
- * <li>Strings may be quoted with <code>'</code>&nbsp;<small>(single
- * quote)</small>.</li>
- * <li>Strings do not need to be quoted at all if they do not begin with a
- * quote or single quote, and if they do not contain leading or trailing
- * spaces, and if they do not contain any of these characters:
- * <code>{ } [ ] / \ : , #</code> and if they do not look like numbers and
- * if they are not the reserved words <code>true</code>, <code>false</code>,
- * or <code>null</code>.</li>
+ * <li>在右花括号之前可以有一个 <code>,</code> （逗号）。</li>
+ * <li>字符串（名称和值）可以使用单引号 <code>'</code>包裹。</li>
+ * <li>字符串根本不需要使用引号包裹，如果字符串不以双引号或单引号开头，也不包含前导或尾随空格，并且不包含任何下面的字符：<code>{ } [ ] / \ : , #</code>
+ * 并且不是数字，不是保留字 <code>true</code>, <code>false</code>, or <code>null</code>
+ * 。</li>
  * </ul>
  *
  * @author JSON.org
@@ -100,15 +90,12 @@ import java.util.Set;
  */
 public class JSONObject {
     /**
-     * JSONObject.NULL is equivalent to the value that JavaScript calls null,
-     * whilst Java's null is equivalent to the value that JavaScript calls
-     * undefined.
+     * JSONObject.NULL 等价于 JavaScript 调用 NULL 的值，而Java的NULL等价于JavaScript调用未定义的值。
      */
     private static final class Null {
 
         /**
-         * There is only intended to be a single instance of the NULL object,
-         * so the clone method returns itself.
+         * NULL对象是单例的，所以clone方法返回它自己。
          *
          * @return NULL.
          */
@@ -118,21 +105,21 @@ public class JSONObject {
         }
 
         /**
-         * A Null object is equal to the null value and to itself.
+         * NULL 对象等于 null或它自身。
          *
          * @param object
-         *            An object to test for nullness.
-         * @return true if the object parameter is the JSONObject.NULL object or
-         *         null.
+         *            待比较的非空对象
+         * @return true ： 如果object是JSONObject.NULL 或 null，否则返回 false
          */
         @Override
         public boolean equals(Object object) {
             return object == null || object == this;
         }
+        
         /**
-         * A Null object is equal to the null value and to itself.
+         * 空对象等于空值（null）和它自己。
          *
-         * @return always returns 0.
+         * @return 固定返回 0
          */
         @Override
         public int hashCode() {
@@ -140,9 +127,9 @@ public class JSONObject {
         }
 
         /**
-         * Get the "null" string value.
+         * 获取“null”字符串值。
          *
-         * @return The string "null".
+         * @return 返回字符串 "null"
          */
         @Override
         public String toString() {
@@ -151,40 +138,35 @@ public class JSONObject {
     }
 
     /**
-     * The map where the JSONObject's properties are kept.
+     * 保存 <code>JSONObject</code> 属性(KV值)的 <code>Map</code>
      */
     private final Map<String, Object> map;
 
     /**
-     * It is sometimes more convenient and less ambiguous to have a
-     * <code>NULL</code> object than to use Java's <code>null</code> value.
-     * <code>JSONObject.NULL.equals(null)</code> returns <code>true</code>.
-     * <code>JSONObject.NULL.toString()</code> returns <code>"null"</code>.
+     * 使用 <code>NULL</code> 对象进行空值判断比使用 Java 的 null 更加方便。<br>
+     * <code>JSONObject.NULL.equals(null)</code> 返回 <code>true</code>。<br>
+     * <code>JSONObject.NULL.toString()</code> 返回 <code>"null"</code>。
      */
     public static final Object NULL = new Null();
 
     /**
-     * Construct an empty JSONObject.
+     * 用 HashMap 构造一个空 JSONObject。
+     * <p>
+     * 使用 HashMap确保元素符合规范无序排列，即放入的顺序和按顺序取出的可能不同。
+     * JSON是一种可移植的传输格式，允许容器实现重新排列它们的项，以便基于关联访问进行更快的元素检索。 因此，实现不能依赖于项目的顺序。
      */
     public JSONObject() {
-        // HashMap is used on purpose to ensure that elements are unordered by 
-        // the specification.
-        // JSON tends to be a portable transfer format to allows the container 
-        // implementations to rearrange their items for a faster element 
-        // retrieval based on associative access.
-        // Therefore, an implementation mustn't rely on the order of the item.
         this.map = new HashMap<String, Object>();
     }
 
     /**
-     * Construct a JSONObject from a subset of another JSONObject. An array of
-     * strings is used to identify the keys that should be copied. Missing keys
-     * are ignored.
+     * 用给定的 JSONObject的指定子集构造一个新的 JSONObject。 指定的Key对应的值会复制到新的
+     * JSONObject中，如果Key在给定的JSONObject中不存在则忽略该Key。
      *
      * @param jo
-     *            A JSONObject.
+     *            给定的JSONObject
      * @param names
-     *            An array of strings.
+     *            给定的Key
      */
     public JSONObject(JSONObject jo, String[] names) {
         this(names.length);
@@ -197,13 +179,12 @@ public class JSONObject {
     }
 
     /**
-     * Construct a JSONObject from a JSONTokener.
+     * 使用 JSONTokener 构造 JSONObject
      *
      * @param x
-     *            A JSONTokener object containing the source string.
+     *            一个包含源字符串的 JSONTokener 对象
      * @throws JSONException
-     *             If there is a syntax error in the source string or a
-     *             duplicated key.
+     *             如果源字符串中有语法错误或重复的键抛出该异常。
      */
     public JSONObject(JSONTokener x) throws JSONException {
         this();
@@ -266,11 +247,15 @@ public class JSONObject {
     }
 
     /**
-     * Construct a JSONObject from a Map.
-     *
+     * 使用给定的Map构造一个JSONObject，创建map时还是使用的HashMap
+     * 
      * @param m
-     *            A map object that can be used to initialize the contents of
-     *            the JSONObject.
+     *            用于初始化JSONObject内容的map对象
+     * 
+     * @throws JSONException
+     *             如果Map中的值是无效数字，比如无穷大，无穷小等。
+     * @throws NullPointerException
+     *             如果map中的Key是null
      */
     public JSONObject(Map<?, ?> m) {
         if (m == null) {
@@ -287,28 +272,23 @@ public class JSONObject {
     }
 
     /**
-     * Construct a JSONObject from an Object using bean getters. It reflects on
-     * all of the public methods of the object. For each of the methods with no
-     * parameters and a name starting with <code>"get"</code> or
-     * <code>"is"</code> followed by an uppercase letter, the method is invoked,
-     * and a key and the value returned from the getter method are put into the
-     * new JSONObject.
+     * 从一个Bean对象的 getters 方法构造一个 JSONObject。通过反射调用该对象所有 public 修饰的方法。
+     * 所有这些方法必须无参并且以<code>"get"</code> 或 <code>"is"</code>开头，后面紧跟是一个大写字母（驼峰命名）。
+     * 调用getter方法获取的key和值放入JSONObject对象中。
      * <p>
-     * The key is formed by removing the <code>"get"</code> or <code>"is"</code>
-     * prefix. If the second remaining character is not upper case, then the
-     * first character is converted to lower case.
+     * JSON中的KEY会移除方法的<code>"get"</code> 或 <code>"is"</code>
+     * 前缀。如果剩余的第二个字符不是大写字符，那么第一个字符会转换为小写字符。
      * <p>
-     * For example, if an object has a method named <code>"getName"</code>, and
-     * if the result of calling <code>object.getName()</code> is
-     * <code>"Larry Fine"</code>, then the JSONObject will contain
+     * 比如：如果一个对象有一个方法 <code>"getName"</code>，并且调用这个方法
+     * <code>object.getName()</code> 会返回
+     * <code>"Larry Fine"</code>，那么JSONObject对象会包含
      * <code>"name": "Larry Fine"</code>.
      * <p>
-     * Methods that return <code>void</code> as well as <code>static</code>
-     * methods are ignored.
+     * 返回 <code>void</code> 并且使用 <code>static</code> 修饰的方法将被忽略。
      * 
      * @param bean
-     *            An object that has getter methods that should be used to make
-     *            a JSONObject.
+     *            一个有getter方法用于生成 JSONObject 的对象。
+     * 
      */
     public JSONObject(Object bean) {
         this();
@@ -316,18 +296,14 @@ public class JSONObject {
     }
 
     /**
-     * Construct a JSONObject from an Object, using reflection to find the
-     * public members. The resulting JSONObject's keys will be the strings from
-     * the names array, and the values will be the field values associated with
-     * those keys in the object. If a key is not found or not visible, then it
-     * will not be copied into the new JSONObject.
+     * 从对象构造 JSONObject，使用反射获取公开成员。结果 JSONObject<br>
+     * 的键使用名称数组中的字符串，值使用这些键对应的对象中的属性值。<br>
+     * 如果键不存在或不可见，那么不会把这些复制到新的JSONObject中。
      *
      * @param object
-     *            An object that has fields that should be used to make a
-     *            JSONObject.
+     *            具有用于创建JSONObject的字段的对象。
      * @param names
-     *            An array of strings, the names of the fields to be obtained
-     *            from the object.
+     *            字符串数组，即从对象中获取的字段名称。
      */
     public JSONObject(Object object, String names[]) {
         this(names.length);
@@ -342,30 +318,26 @@ public class JSONObject {
     }
 
     /**
-     * Construct a JSONObject from a source JSON text string. This is the most
-     * commonly used JSONObject constructor.
+     * 从JSON字符串构造一个JSONObject对象。这是最常用的一个JSONObject构造方法。
      *
      * @param source
-     *            A string beginning with <code>{</code>&nbsp;<small>(left
-     *            brace)</small> and ending with <code>}</code>
-     *            &nbsp;<small>(right brace)</small>.
+     *            一个以<code>{</code> 开始以<code>}</code> 结束的字符串。
      * @exception JSONException
-     *                If there is a syntax error in the source string or a
-     *                duplicated key.
+     *                如果在源字符串中有语法错误或重复的KEY值。
      */
     public JSONObject(String source) throws JSONException {
         this(new JSONTokener(source));
     }
 
     /**
-     * Construct a JSONObject from a ResourceBundle.
+     * 从 ResourceBundle 构造一个 JSONObject。
      *
      * @param baseName
-     *            The ResourceBundle base name.
+     *            ResourceBundle 的基本名称。
      * @param locale
-     *            The Locale to load the ResourceBundle for.
+     *            要加载ResourceBundle的区域设置。
      * @throws JSONException
-     *             If any JSONExceptions are detected.
+     *             如果检测到任何JSONException。
      */
     public JSONObject(String baseName, Locale locale) throws JSONException {
         this();
@@ -401,34 +373,28 @@ public class JSONObject {
     }
     
     /**
-     * Constructor to specify an initial capacity of the internal map. Useful for library 
-     * internal calls where we know, or at least can best guess, how big this JSONObject
-     * will be.
+     * 指定 map 初始容量的构造函数。对于库内部调用非常有用，因为我们知道，或者至少可以猜到，这个 JSONObject 会有多大。
      * 
-     * @param initialCapacity initial capacity of the internal map.
+     * @param initialCapacity
+     *            map的初始容量
      */
     protected JSONObject(int initialCapacity){
         this.map = new HashMap<String, Object>(initialCapacity);
     }
 
     /**
-     * Accumulate values under a key. It is similar to the put method except
-     * that if there is already an object stored under the key then a JSONArray
-     * is stored under the key to hold all of the accumulated values. If there
-     * is already a JSONArray, then the new value is appended to it. In
-     * contrast, the put method replaces the previous value.
+     * 在键下积累值。 它与put方法类似，只是如果已经有一个对象存储在键下，那么JSONArray就存储在键下，以保存所有累积的值。<br>
+     * 如果已经有一个JSONArray，那么新的值将被追加到它之后。 相反，put方法替换以前的值。<br>
      *
-     * If only one value is accumulated that is not a JSONArray, then the result
-     * will be the same as using put. But if multiple values are accumulated,
-     * then the result will be like append.
+     * 如果只累积了一个不是JSONArray的值，那么结果将与使用PUT相同。 但如果累积了多个值，则结果将类似于“追加”。
      *
      * @param key
-     *            A key string.
+     *            键
      * @param value
-     *            An object to be accumulated under the key.
-     * @return this.
+     *            键对应的值
+     * @return 返回JSONObject
      * @throws JSONException
-     *             If the value is an invalid number or if the key is null.
+     *             如果该值是无效的数字或键为null。
      */
     public JSONObject accumulate(String key, Object value) throws JSONException {
         testValidity(value);
@@ -446,19 +412,17 @@ public class JSONObject {
     }
 
     /**
-     * Append values to the array under a key. If the key does not exist in the
-     * JSONObject, then the key is put in the JSONObject with its value being a
-     * JSONArray containing the value parameter. If the key was already
-     * associated with a JSONArray, then the value parameter is appended to it.
+     * 将值追加到键下的数组中。<br>
+     * 如果键不存在于JSONObject中，则将键放入JSONObject，其值为包含value参数的JSONArray。<br>
+     * 如果键已经与JSONArray相关联，那么value参数就会追加到它之后。<br>
      *
      * @param key
-     *            A key string.
+     *            键
      * @param value
-     *            An object to be accumulated under the key.
+     *            要追加的值
      * @return this.
      * @throws JSONException
-     *             If the key is null or if the current value associated with
-     *             the key is not a JSONArray.
+     *             如果键是null，或现有的值不值JSONArray。
      */
     public JSONObject append(String key, Object value) throws JSONException {
         testValidity(value);
@@ -475,12 +439,11 @@ public class JSONObject {
     }
 
     /**
-     * Produce a string from a double. The string "null" will be returned if the
-     * number is not finite.
+     * 从Double生成字符串。如果数字不是有限的，则返回字符串“null”。
      *
      * @param d
-     *            A double.
-     * @return A String.
+     *            一个Double型的数字
+     * @return 代表这个数字的字符串
      */
     public static String doubleToString(double d) {
         if (Double.isInfinite(d) || Double.isNaN(d)) {
@@ -503,13 +466,13 @@ public class JSONObject {
     }
 
     /**
-     * Get the value object associated with a key.
+     * 获取键对应的值。
      *
      * @param key
-     *            A key string.
-     * @return The object associated with the key.
+     *            键
+     * @return 键对应的值
      * @throws JSONException
-     *             if the key is not found.
+     *             如果键没有找到
      */
     public Object get(String key) throws JSONException {
         if (key == null) {
@@ -523,17 +486,16 @@ public class JSONObject {
     }
 
     /**
-    * Get the enum value associated with a key.
-    * 
-    * @param clazz
-    *           The type of enum to retrieve.
-    * @param key
-    *           A key string.
-    * @return The enum value associated with the key
-    * @throws JSONException
-    *             if the key is not found or if the value cannot be converted
-    *             to an enum.
-    */
+     * 获取与键关联的枚举值。
+     * 
+     * @param clazz
+     *            要检索的枚举类型。
+     * @param key
+     *            键
+     * @return 与键关联的枚举值。
+     * @throws JSONException
+     *             如果键没有找到或值无法转换为指定的枚举类型。
+     */
     public <E extends Enum<E>> E getEnum(Class<E> clazz, String key) throws JSONException {
         E val = optEnum(clazz, key);
         if(val==null) {
@@ -548,14 +510,13 @@ public class JSONObject {
     }
 
     /**
-     * Get the boolean value associated with a key.
+     * 获取与键关联的布尔值。
      *
      * @param key
-     *            A key string.
-     * @return The truth.
+     *            键
+     * @return 布尔值
      * @throws JSONException
-     *             if the value is not a Boolean or the String "true" or
-     *             "false".
+     *             值不是布尔类型或者值不是 "true" 或 "false" 字符串。
      */
     public boolean getBoolean(String key) throws JSONException {
         Object object = this.get(key);

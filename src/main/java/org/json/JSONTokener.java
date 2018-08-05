@@ -39,28 +39,29 @@ SOFTWARE.
  * @version 2014-05-03
  */
 public class JSONTokener {
-    /** current read character position on the current line. */
+    /** 当前读取的字符在当前行的位置。 */
     private long character;
-    /** flag to indicate if the end of the input has been found. */
+    /** 标记是否找到了输入的末尾。 */
     private boolean eof;
-    /** current read index of the input. */
+    /** 输入的当前读取索引。 */
     private long index;
-    /** current line of the input. */
+    /** 输入的当前行。 */
     private long line;
-    /** previous character read from the input. */
+    /** 从输入读取的前一个字符。 */
     private char previous;
-    /** Reader for the input. */
+    /** 输入的读取器。 */
     private final Reader reader;
-    /** flag to indicate that a previous character was requested. */
+    /** 标志，以指示请求了前一个字符。 */
     private boolean usePrevious;
-    /** the number of characters read in the previous line. */
+    /** 前一行中读取的字符数。 */
     private long characterPreviousLine;
 
 
     /**
-     * Construct a JSONTokener from a Reader. The caller must close the Reader.
+     * 从 Reader 构造一个 JSONTokener。调用者必须自己关闭这个 Reader。
      *
-     * @param reader     A reader.
+     * @param reader
+     *            一个 Reader的实例。
      */
     public JSONTokener(Reader reader) {
         this.reader = reader.markSupported()
@@ -86,9 +87,10 @@ public class JSONTokener {
 
 
     /**
-     * Construct a JSONTokener from a string.
+     * 使用给定的JSON字符串构造一个 JSONTokener。
      *
-     * @param s     A source string.
+     * @param s
+     *            JSON字符串
      */
     public JSONTokener(String s) {
         this(new StringReader(s));
@@ -184,10 +186,11 @@ public class JSONTokener {
 
 
     /**
-     * Get the next character in the source string.
+     * 获取源字符串中的下一个字符。
      *
-     * @return The next character, or 0 if past the end of the source string.
-     * @throws JSONException Thrown if there is an error reading the source string.
+     * @return 下一个字符, 如果到源字符串的末尾了返回0。
+     * @throws JSONException
+     *             读取源字符发生错误。
      */
     public char next() throws JSONException {
         int c;
@@ -283,9 +286,11 @@ public class JSONTokener {
 
 
     /**
-     * Get the next char in the string, skipping whitespace.
-     * @throws JSONException Thrown if there is an error reading the source string.
-     * @return  A character, or 0 if there are no more characters.
+     * 获取字符串中的下一个字符，跳过空格。
+     * 
+     * @throws JSONException
+     *             如果读取源字符串有错误，则抛出该异常。
+     * @return 返回读取的下一个字符，如果没有下一个字符，则返回0。
      */
     public char nextClean() throws JSONException {
         for (;;) {
